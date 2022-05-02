@@ -28,7 +28,7 @@ const getBlogs = async function (req, res) {
   try {
     data = req.query;
     const blogs = await blogModel.find({
-      $and: [data, { isDeleted: false }, { isPublished: true }],
+      $and: [data, { isDeleted: false }, {published: true }],
     });
     if (blogs.length == 0) {
       return res.status(404).send({ status: false, msg: "no blogs" });
@@ -112,21 +112,12 @@ const deleteQuery = async function (req, res) {
     let anyData = req.query;
     let obj = await blogModel.find({$and: [anyData, {authorId: decode.author_Id}]});
 
-    let del = await blogModel.updateMany({obj},{isDeleted : true, deletedAt: moment().format()},{new: true})
+    let del = await blogModel.updateMany({_id: obj},{isDeleted : true, deletedAt: moment().format()},{new: true})
 
 
     if (!obj.length)
       return res.status(400).send({ status: false, msg: "BAD REQ" });
-    // let delData= []
-
-    // for (let j = 0; j < obj.length; j++) {
-    //   delData = await blogModel.findOneAndUpdate(
-    //     { _id: obj[j]._id },
-    //     { isDeleted: true, deletedAt: Date.now() },
-    //     { new: true }
-    //   );
-
-    // }
+    
     res.status(200).send({ status: true, data: "Documents successfully deleted" });
   } catch (err) {
     console.log(err.message);

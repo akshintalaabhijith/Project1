@@ -30,8 +30,9 @@ const authorise = async function (req, res, next) {
 
 
     if (pathBlog) {
-      let pathAuthors = await blogModel.findById({ _id: pathBlog }).select({ authorId: 1, _id: 0 });
-      if (pathAuthors != author_Id)
+      let pathAuthors = await blogModel.findById({ _id: pathBlog })
+    //   console.log(pathAuthors)
+      if (pathAuthors.authorId != author_Id)
         return res
           .status(400)
           .send({ status: false, msg: "user not authorised" });
